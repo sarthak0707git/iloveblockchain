@@ -1,0 +1,37 @@
+# dependencies
+node_modules
+
+# yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# eslint
+.eslintcache
+
+# misc
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# cli
+dist
+
+.agents
+.claude
+.cursor
+.opencode
+
+# agent / AI tooling config
+CLAUDE.md
+AGENTS.md
+.mcp.json
+opencode.json
+
+# design tooling records
+.hallmark

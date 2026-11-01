@@ -1,0 +1,304 @@
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Coral (deal 1/3, seed on-chain-task-escrow-dashboard-0d43·647ab716·2026-11-01·r0) · redesign: full
+ * nav: kept (scaffold header, restyled) · signature: each task is a cotton sheet on the desk, "paid" pressed into it in coral
+ * states: idle/hover/active/focus/disabled/busy/empty/error · axes: light/grotesk-sans/warm · posture: restrained · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E3 S4 R3 V4 · weakest: E, the board only has real events once a wallet has acted; empty states say so in words rather than filling with chrome */
+/* Hallmark · answered F4 · Coral defines the control set: letterpress cotton card plus one ink-board primary · the theme wins on controls, and the ink board is the only action that spends money */
+@import url("https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&display=swap");
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./base.css" layer(base);
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
+  --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@plugin "daisyui" {
+  themes:
+    light,
+    dark --prefersdark;
+}
+
+@plugin "daisyui/theme" {
+  name: "light";
+
+  --color-primary: #93bbfb;
+  --color-primary-content: #212638;
+  --color-secondary: #dae8ff;
+  --color-secondary-content: #212638;
+  --color-accent: #93bbfb;
+  --color-accent-content: #212638;
+  --color-neutral: #212638;
+  --color-neutral-content: #ffffff;
+  --color-base-100: #ffffff;
+  --color-base-200: #f4f8ff;
+  --color-base-300: #dae8ff;
+  --color-base-content: #212638;
+  --color-info: #93bbfb;
+  --color-success: #34eeb6;
+  --color-warning: #ffcf72;
+  --color-error: #ff8863;
+
+  --radius-field: 0rem;
+  --radius-box: 0rem;
+  --radius-selector: 0rem;
+
+  --tt-tailw: 6px;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+
+  --color-primary: #212638;
+  --color-primary-content: #f9fbff;
+  --color-secondary: #323f61;
+  --color-secondary-content: #f9fbff;
+  --color-accent: #4969a6;
+  --color-accent-content: #f9fbff;
+  --color-neutral: #f9fbff;
+  --color-neutral-content: #385183;
+  --color-base-100: #385183;
+  --color-base-200: #2a3655;
+  --color-base-300: #212638;
+  --color-base-content: #f9fbff;
+  --color-info: #385183;
+  --color-success: #34eeb6;
+  --color-warning: #ffcf72;
+  --color-error: #ff8863;
+
+  --radius-field: 0rem;
+  --radius-box: 0rem;
+  --radius-selector: 0rem;
+
+  --tt-tailw: 6px;
+  --tt-bg: var(--color-primary);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  p {
+    margin: var(--space-md) 0;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin-bottom: var(--space-xs);
+    line-height: 1;
+  }
+}
+
+:root,
+[data-theme] {
+  background: var(--color-base-200);
+}
+
+.btn {
+  box-shadow: none;
+}
+
+.link {
+  text-underline-offset: 2px;
+}
+
+.link:hover {
+  opacity: 80%;
+}
+
+/* ---------------------------------------------------------------- Coral
+   The desk, the stationery and the pressed controls. Every value is a token
+   from tokens.css; nothing below names a colour or a face directly. */
+@layer components {
+  .desk {
+    background-color: var(--color-desk);
+    background-image: radial-gradient(90% 120% at 0% 30%, var(--color-cotton), transparent 62%), var(--tex-desk);
+  }
+
+  /* A sheet of cotton stock: lit top-left, shaded bottom-right, cast falling right. */
+  .stock {
+    background-color: var(--color-cotton);
+    background-image: linear-gradient(100deg, var(--color-cotton), transparent 45%), var(--tex-cotton);
+    color: var(--color-print);
+    border-radius: var(--radius-stock);
+    box-shadow: var(--edge-stock), var(--cast-stock);
+  }
+  .stock--lift {
+    transition:
+      transform var(--dur-short, 160ms) var(--ease-out),
+      box-shadow var(--dur-short, 160ms) var(--ease-out);
+  }
+  .stock--lift:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--edge-stock), var(--cast-stock-lift);
+  }
+
+  /* The ink band. Stationery laid on it casts deeper. */
+  .board {
+    background: var(--color-board);
+    color: var(--color-board-type);
+    border-radius: var(--radius-stock);
+  }
+
+  /* Controls are letterpress cards, never pills, never flat squares. */
+  .btn-c {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5ch;
+    min-height: 44px;
+    padding-inline: var(--space-lg, 1.25rem);
+    border: 0;
+    border-radius: var(--radius-stock);
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      transform var(--dur-short, 160ms) var(--ease-out),
+      box-shadow var(--dur-short, 160ms) var(--ease-out);
+  }
+  .btn-c--card {
+    background-color: var(--color-cotton);
+    background-image: var(--tex-cotton);
+    color: var(--color-print);
+    text-shadow: 0.5px 0.75px 0 var(--color-cotton);
+    box-shadow: var(--edge-stock), var(--cast-stock);
+  }
+  .btn-c--ink {
+    background: var(--color-board);
+    color: var(--color-board-type);
+    text-shadow: 0 -0.75px 0 var(--color-ink);
+    box-shadow: var(--cast-stock);
+  }
+  .btn-c:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--edge-stock), var(--cast-stock-lift);
+  }
+  .btn-c:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn-c:disabled {
+    background-color: var(--color-paper-3);
+    background-image: none;
+    color: var(--color-muted);
+    text-shadow: none;
+    box-shadow: 0 0 0 0.5px var(--color-rule-2);
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-c--sm {
+    min-height: 36px;
+    font-size: var(--text-sm);
+    padding-inline: var(--space-md, 0.875rem);
+  }
+
+  /* Inputs: 1px muted border, deep coral focus. */
+  .field-c {
+    width: 100%;
+    min-height: 44px;
+    padding-inline: var(--space-sm);
+    background: var(--color-cotton);
+    color: var(--color-print);
+    border: var(--rule-hair) solid var(--color-muted);
+    border-radius: var(--radius-input);
+  }
+  .field-c::placeholder {
+    color: var(--color-muted);
+  }
+  /* Disabled reads on three channels: fill, ink and cursor. */
+  .field-c:disabled {
+    background-color: var(--color-paper-3);
+    background-image: none;
+    color: var(--color-muted);
+    border-color: var(--color-rule);
+    cursor: not-allowed;
+  }
+
+  /* A choice of two to four rides in a groove pressed into the cotton. */
+  .groove {
+    background: var(--color-cotton);
+    border-radius: 12px;
+    box-shadow: var(--press-groove);
+  }
+
+  /* Figures in a column are mono; General Sans has no tabular figures. */
+  .fig {
+    font-family: var(--font-outlier);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The one settled state, pressed into the stock. Coral is spent here and nowhere else. */
+  .pressed {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-paid);
+    text-shadow: 0.5px 0.75px 0 color-mix(in oklab, var(--color-cotton) 85%, transparent);
+    transform: rotate(-3deg);
+    opacity: 0.92;
+  }
+
+  /* Status that is not "settled" stays an ink outline. */
+  .mark {
+    display: inline-block;
+    padding: 0.1em 0.6em;
+    border: var(--rule-hair) solid var(--color-rule-2);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+    color: var(--color-muted);
+  }
+  .mark--live {
+    border-color: var(--color-ink-2);
+    color: var(--color-ink-2);
+  }
+
+  .label-c {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-muted);
+  }
+  .rule {
+    border: 0;
+    border-top: var(--rule-hair) solid var(--color-rule);
+    margin: 0;
+  }
+}
+
+/* The scaffold shell (header, footer, wallet button) inherits the desk. */
+[data-theme="light"] {
+  --color-base-100: var(--color-cotton);
+  --color-base-200: var(--color-paper-2);
+  --color-base-300: var(--color-rule);
+  --color-base-content: var(--color-ink);
+  --color-primary: var(--color-board);
+  --color-primary-content: var(--color-board-type);
+  --color-secondary: var(--color-paper-2);
+  --color-secondary-content: var(--color-ink);
+  --color-accent: var(--color-accent);
+  --color-accent-content: var(--color-accent-ink);
+  --color-neutral: var(--color-ink);
+  --color-neutral-content: var(--color-board-type);
+  --radius-field: var(--radius-input);
+  --radius-box: var(--radius-stock);
+}
